@@ -37,15 +37,32 @@ def customPRF512(key,A,B):
         R = R+hmacsha1.digest()
     return R[:blen]
 
+def searchPMKID(pcap):
+    """
+    Recherche le PMKID et le retourne
+    """
+
+    for packet in pcap:
+        if packet.haslayer(RadioTap) and packet.haslayer(EAPOL):    # authentifcation WPA
+            if packet[EAPOL][Raw].original[1:3] == b'\x00\x8a':     # Premier message handshake
+                return packet.original[193:209]
+
+                
+
 # Read capture file -- it contains beacon, authentication, associacion, handshake and data
-wpa=rdpcap("wpa_handshake.cap") 
+# wpa=rdpcap("wpa_handshake.cap")
+wpa=rdpcap("PMKID_handshake.pcap") 
+
 
 # Important parameters for key derivation - most of them can be obtained from the pcap file
-passPhrase  = "actuelle"
+passPhrase  = "admin123"
 A           = "Pairwise key expansion" #this string is used in the pseudo-random function
-ssid        = "SWI"
-APmac       = a2b_hex("cebcc8fdcab7")
-Clientmac   = a2b_hex("0013efd015bd")
+ssid        = "Sunrise_2.4GHz_DD4B90"
+#APmac       = a2b_hex("cebcc8fdcab7")
+#Clientmac   = a2b_hex("0013efd015bd")
+APmac       = a2b_hex("904d4add4b94")
+Clientmac   = a2b_hex("90dd5d95bc14")
+
 
 # Authenticator and Supplicant Nonces
 ANonce      = a2b_hex("90773b9a9661fee1f406e8989c912b45b029c652224e8b561417672ca7e0fd91")
@@ -68,10 +85,19 @@ print ("CLient Mac: ",b2a_hex(Clientmac),"\n")
 print ("AP Nonce: ",b2a_hex(ANonce),"\n")
 print ("Client Nonce: ",b2a_hex(SNonce),"\n")
 
+
+
 #calculate 4096 rounds to obtain the 256 bit (32 oct) PMK
 passPhrase = str.encode(passPhrase)
+
 ssid = str.encode(ssid)
 pmk = pbkdf2(hashlib.sha1,passPhrase, ssid, 4096, 32)
+
+# Extract PMKID
+print(searchPMKID(wpa))
+# Calculate PMKID
+pmkBase = b'PMK NAME' + APmac + Clientmac
+print(hmac.new(pmk, pmkBase, hashlib.sha1).digest())
 
 #expand pmk to obtain PTK
 ptk = customPRF512(pmk,str.encode(A),B)
