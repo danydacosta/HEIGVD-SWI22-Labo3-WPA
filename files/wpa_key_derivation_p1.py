@@ -76,6 +76,12 @@ def getSupplicantNonceFromPcap(pcap_data):
     handshake2 = pcap_data[6]  # 4-way handshake second packet is in the seventh capture's packet
     return handshake2[4].info[18:50].hex() # SNonce start at the 18th byte of the eapol payload and it's length is 32 bytes
 
+def getMICFromPcap(pcap_data):
+    """
+    This function retrieves the MIC from the wpa_handshake.cap capture
+    """
+    handshake4 = pcap_data[8]  # 4-way handshake last packet is in the ninth capture's packet
+    return handshake4[4].info[82:98].hex() # MIC start at the 82th byte of the eapol payload and it's length is 16 bytes
 
 # Read capture file -- it contains beacon, authentication, associacion, handshake and data
 wpa = rdpcap("wpa_handshake.cap")
@@ -94,7 +100,7 @@ SNonce = a2b_hex(getSupplicantNonceFromPcap(wpa))
 
 # This is the MIC contained in the 4th frame of the 4-way handshake
 # When attacking WPA, we would compare it to our own MIC calculated using passphrases from a dictionary
-mic_to_test = "36eef66540fa801ceee2fea9b7929b40"
+mic_to_test = getMICFromPcap(wpa)
 
 B = min(APmac, Clientmac)+max(APmac, Clientmac)+min(ANonce, SNonce) + \
     max(ANonce, SNonce)  # used in pseudo-random function
