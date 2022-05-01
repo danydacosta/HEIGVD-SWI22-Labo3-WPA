@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Descr
+Check for each passphrase found in a txt file it's corresponding MIC calculated using parameters found in wpa_handshake.cap against the MIC from the .cap
 """
 
 from numpy import array
