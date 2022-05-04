@@ -86,7 +86,98 @@ Utilisant votre script précédent, le modifier pour réaliser les taches suivan
 
 #### 3.3. Attaque hashcat
 
-A manière de comparaison, réaliser l'attaque sur le [fichier de capture](files/PMKID_handshake.pcap) utilisant la méthode décrite [ici](https://hashcat.net/forum/thread-7717.html).
+A manière de comparaison, réaliser l'attaque sur le [fichier de capture](files/PMKID_handshake.pcap) utilisant la méthode décrite [ici](https://hashcat.net/forum/thread-7717.html).  
+Création fichier pour format hashcat 16800:
+```
+stefan@stefan-lubuntuVM:~/Téléchargements$ hcxpcaptool -z output.16800 PMKID_handshake.pcap 
+
+reading from PMKID_handshake.pcap
+failed to read packet 1006 (packet len 313 != incl len 422   
+                                                
+summary capture file:                           
+---------------------
+file name........................: PMKID_handshake.pcap
+file type........................: pcap 2.4
+file hardware information........: unknown
+capture device vendor information: 000000
+file os information..............: unknown
+file application information.....: unknown (no custom options)
+network type.....................: DLT_IEEE802_11_RADIO (127)
+endianness.......................: little endian
+read errors......................: yes
+minimum time stamp...............: 23.04.2020 10:25:07 (GMT)
+maximum time stamp...............: 23.04.2020 10:25:44 (GMT)
+packets inside...................: 1006
+skipped damaged packets..........: 0
+packets with GPS NMEA data.......: 0
+packets with GPS data (JSON old).: 0
+packets with FCS.................: 1006
+beacons (total)..................: 495
+beacons (WPS info inside)........: 250
+beacons (device info inside).....: 250
+probe requests...................: 30
+probe responses..................: 52
+association requests.............: 2
+association responses............: 5
+authentications (OPEN SYSTEM)....: 4
+authentications (BROADCOM).......: 2
+authentications (APPLE)..........: 2
+deauthentications................: 14
+disassociations..................: 1
+action packets...................: 1
+EAPOL packets (total)............: 68
+EAPOL packets (WPA2).............: 68
+PMKIDs (not zeroed - total)......: 2
+PMKIDs (WPA2)....................: 55
+PMKIDs from access points........: 2
+best handshakes (total)..........: 2 (ap-less: 0)
+best PMKIDs (total)..............: 2
+
+summary output file(s):
+-----------------------
+2 PMKID(s) written to output.16800
+```  
+
+Lancement de l'attaque haschat :  
+```
+stefan@stefan-lubuntuVM:~/Téléchargements$ hashcat -m 16800 output.16800 --force -a 3 -w 3 'admin?d?d?d'
+hashcat (v5.1.0) starting...
+
+OpenCL Platform #1: The pocl project
+====================================
+* Device #1: pthread-Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz, 1024/2950 MB allocatable, 2MCU
+
+Hashes: 2 digests; 2 unique digests, 1 unique salts
+Bitmaps: 16 bits, 65536 entries, 0x0000ffff mask, 262144 bytes, 5/13 rotates
+
+Applicable optimizers:
+* Zero-Byte
+* Single-Salt
+* Brute-Force
+* Slow-Hash-SIMD-LOOP
+
+[...]
+                                                 
+Session..........: hashcat
+Status...........: Cracked
+Hash.Type........: WPA-PMKID-PBKDF2
+Hash.Target......: output.16800
+Time.Started.....: Wed May  4 11:30:31 2022 (1 sec)
+Time.Estimated...: Wed May  4 11:30:32 2022 (0 secs)
+Guess.Mask.......: admin?d?d?d [8]
+Guess.Queue......: 1/1 (100.00%)
+Speed.#1.........:     1303 H/s (35.45ms) @ Accel:1024 Loops:512 Thr:1 Vec:8
+Recovered........: 2/2 (100.00%) Digests, 1/1 (100.00%) Salts
+Progress.........: 1000/1000 (100.00%)
+Rejected.........: 0/1000 (0.00%)
+Restore.Point....: 0/1000 (0.00%)
+Restore.Sub.#1...: Salt:0 Amplifier:0-1 Iteration:1-3
+Candidates.#1....: admin123 -> admin573
+
+Started: Wed May  4 11:29:54 2022
+Stopped: Wed May  4 11:30:34 2022
+```
+
 
 
 ### 4. Scairodump (Challenge optionnel pour un bonus)
