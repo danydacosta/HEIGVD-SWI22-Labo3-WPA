@@ -10,7 +10,7 @@ from numpy import array_split
 from pbkdf2 import *
 from binascii import a2b_hex, b2a_hex
 from scapy.all import *
-from wpa_key_derivation_p1 import getSSIDFromPcap, getAPMacFromPcap, getClientMacFromPcap, getAuthenticatorNonceFromPcap, getSupplicantNonceFromPcap, customPRF512, getMICFromPcap
+from wpa_key_derivation import getSSIDFromPcap, getAPMacFromPcap, getClientMacFromPcap, getAuthenticatorNonceFromPcap, getSupplicantNonceFromPcap, customPRF512, getMICFromPcap
 
 __author__ = "Dany Oliveira da Costa & Stefan Simeunovic"
 __version__ = "1.0"

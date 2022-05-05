@@ -14,11 +14,8 @@ from numpy import array_split
 from pbkdf2 import *
 from binascii import a2b_hex, b2a_hex
 from scapy.all import *
-__author__ = "Abraham Rubinstein et Yann Lederrey"
-__copyright__ = "Copyright 2017, HEIG-VD"
-__license__ = "GPL"
+__author__ = "Dany Oliveira da Costa & Stefan Simeunovic"
 __version__ = "1.0"
-__email__ = "abraham.rubinstein@heig-vd.ch"
 __status__ = "Prototype"
 
 #from pbkdf2 import pbkdf2_hex
